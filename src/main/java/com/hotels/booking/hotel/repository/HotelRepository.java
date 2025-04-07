@@ -1,5 +1,6 @@
 package com.hotels.booking.hotel.repository;
 
+import com.hotels.booking.common.IdNameDto;
 import com.hotels.booking.hotel.controller.dto.HotelGetDto;
 import com.hotels.booking.hotel.repository.entity.Hotel;
 import com.hotels.booking.hotel.repository.enums.City;
@@ -23,9 +24,21 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             FROM Hotel h
             where h.active = true
                 and (:city is null or h.city = :city)
-                and (:search is null or h.name like %:search%)
+                and (:search is null
+                            or h.name ilike %:search%
+                            or h.address ilike %:search%)
             """)
     List<HotelGetDto> getHotels(City city, String search);
+
+    @Query("""
+            SELECT
+                h.id    as id,
+                h.name  as name
+            FROM Hotel h
+            WHERE h.active = true
+        """
+    )
+    List<IdNameDto> findHotelIdNames();
 }
 
 

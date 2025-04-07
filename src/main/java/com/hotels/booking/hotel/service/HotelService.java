@@ -1,6 +1,7 @@
 package com.hotels.booking.hotel.service;
 
 
+import com.hotels.booking.common.IdNameDto;
 import com.hotels.booking.hotel.controller.dto.HotelCreateDto;
 import com.hotels.booking.hotel.controller.dto.HotelGetDto;
 import com.hotels.booking.hotel.controller.dto.HotelUpdateDto;
@@ -20,6 +21,10 @@ import java.util.stream.Collectors;
 public class HotelService {
 
     private final HotelRepository hotelRepository;
+
+    public List<IdNameDto> getHotelsIdName() {
+        return hotelRepository.findHotelIdNames();
+    }
 
     public HotelResponseDto toHotelResponseDto(Hotel hotel) {
         return HotelResponseDto.builder()
@@ -72,7 +77,6 @@ public class HotelService {
         hotelRepository.save(hotelToUpdate);
         return toHotelResponseDto(hotelToUpdate);
     }
-
 
     public List<HotelResponseDto> getSortedHotelsByPrice(SortType sortType) {
         List<Hotel> hotels;

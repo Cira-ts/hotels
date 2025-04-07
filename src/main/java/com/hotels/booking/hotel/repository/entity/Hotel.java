@@ -1,9 +1,11 @@
 package com.hotels.booking.hotel.repository.entity;
 
 import com.hotels.booking.hotel.repository.enums.City;
+import com.hotels.booking.room.repository.entity.Room;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -47,6 +49,9 @@ public class Hotel {
 
     @Column(name="price")
     private BigDecimal price;
+
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Room> rooms;
 
     @Override
     public boolean equals(Object o) {
