@@ -12,5 +12,3 @@ CREATE TABLE room
     hotel_id BIGINT NOT NULL,
     CONSTRAINT fk_hotel FOREIGN KEY (hotel_id) REFERENCES hotel(id)
 );
-
-TRUNCATE table room

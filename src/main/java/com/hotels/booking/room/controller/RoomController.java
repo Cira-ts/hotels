@@ -1,6 +1,7 @@
 package com.hotels.booking.room.controller;
 
 import com.hotels.booking.common.IdNameDto;
+import com.hotels.booking.common.SortType;
 import com.hotels.booking.room.controller.dto.RoomCreateDto;
 import com.hotels.booking.room.controller.dto.RoomDetailsGetDto;
 import com.hotels.booking.room.controller.dto.RoomGetDto;
@@ -8,6 +9,7 @@ import com.hotels.booking.room.repository.enums.RoomType;
 import com.hotels.booking.room.service.RoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -31,8 +33,12 @@ public class RoomController {
     }
 
     @GetMapping()
-    public List<RoomGetDto> getRooms(@RequestParam Long hotelId) {
-        return service.getRooms(hotelId);
+    public Page<RoomGetDto> getRooms(@RequestParam Long hotelId,
+                                     @RequestParam(defaultValue = "0") Integer page,
+                                     @RequestParam(defaultValue = "10") Integer size,
+                                     @RequestParam(defaultValue = "number", required = false) String sortByField,
+                                     @RequestParam(defaultValue = "ASC", required = false) SortType sortType) {
+        return service.getRooms(hotelId, page, size, sortByField,sortType);
     }
 
     @GetMapping("/{id}")

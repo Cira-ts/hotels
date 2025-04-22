@@ -1,8 +1,11 @@
 package com.hotels.booking.room.repository;
 
+import com.hotels.booking.hotel.controller.dto.HotelGetDto;
 import com.hotels.booking.room.controller.dto.RoomDetailsGetDto;
 import com.hotels.booking.room.controller.dto.RoomGetDto;
 import com.hotels.booking.room.repository.entity.Room;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -10,7 +13,7 @@ import java.util.List;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
-    List<RoomGetDto> findRoomsByHotel_id(Long hotelId);
+    Page<RoomGetDto> findRoomsByHotel_id(Long hotelId, Pageable pageable);
 
     @Query("""
         SELECT
@@ -25,18 +28,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
         where r.id = :id
 """)
     RoomDetailsGetDto getRoomDetailsById(Long id);
+
 }
 
 
-
-
-//Select
-//        Case
-//when :roomId is null then r.number as number,
-//r.active as active
-//when r.number as number,
-//r.active as active,
-//r.size as size,
-//r.balcony as balcony,
-//r.price as price
-//from Room r

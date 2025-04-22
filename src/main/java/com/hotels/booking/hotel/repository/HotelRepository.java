@@ -4,6 +4,8 @@ import com.hotels.booking.common.IdNameDto;
 import com.hotels.booking.hotel.controller.dto.HotelGetDto;
 import com.hotels.booking.hotel.repository.entity.Hotel;
 import com.hotels.booking.hotel.repository.enums.City;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -28,7 +30,7 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
                             or h.name ilike %:search%
                             or h.address ilike %:search%)
             """)
-    List<HotelGetDto> getHotels(City city, String search);
+    Page<HotelGetDto> getHotels(City city, String search, Pageable pageable);
 
     @Query("""
             SELECT
@@ -39,6 +41,9 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
         """
     )
     List<IdNameDto> findHotelIdNames();
+
+
+
 }
 
 

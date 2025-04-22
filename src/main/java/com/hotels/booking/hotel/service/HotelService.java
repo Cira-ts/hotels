@@ -2,21 +2,28 @@ package com.hotels.booking.hotel.service;
 
 
 import com.hotels.booking.common.IdNameDto;
+import com.hotels.booking.exceptions.EntityNotFoundException;
 import com.hotels.booking.hotel.controller.dto.HotelCreateDto;
 import com.hotels.booking.hotel.controller.dto.HotelGetDto;
 import com.hotels.booking.hotel.controller.dto.HotelUpdateDto;
 import com.hotels.booking.hotel.repository.enums.City;
-import com.hotels.booking.hotel.repository.enums.SortType;
+import com.hotels.booking.common.SortType;
 import com.hotels.booking.hotel.repository.HotelRepository;
 import com.hotels.booking.hotel.controller.dto.HotelResponseDto;
 import com.hotels.booking.hotel.repository.entity.Hotel;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class HotelService {
 
@@ -24,6 +31,10 @@ public class HotelService {
 
     public List<IdNameDto> getHotelsIdName() {
         return hotelRepository.findHotelIdNames();
+    }
+
+    public Hotel lookUpHotelById(Long id) {
+        return hotelRepository.findById(id).orElseThrow( () ->new EntityNotFoundException("Hotel not found, incorrect id")) ;
     }
 
     public HotelResponseDto toHotelResponseDto(Hotel hotel) {
@@ -46,8 +57,9 @@ public class HotelService {
                 .build();
     }
 
-    public List<HotelGetDto> getHotels(City city, String search) {
-        return hotelRepository.getHotels(city, search);
+    public Page<HotelGetDto> getHotels(SortType sortType, Integer page, Integer size, String sortBy, City city, String search) {
+        Pageable pageable = PageRequest.of(page, size, sortType.equals(SortType.ASC) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending());
+        return hotelRepository.getHotels(city, search, pageable);
     }
 
     public HotelResponseDto saveHotel(HotelCreateDto dto) {
@@ -57,15 +69,18 @@ public class HotelService {
     }
 
     public void deleteHotel(long hotelId) {
+        if (!hotelRepository.existsById(hotelId)) {
+            throw new EntityNotFoundException("Hotel with id " + hotelId + " not found");
+        }  // keep?
         hotelRepository.deleteById(hotelId);
     }
 
     public Hotel getHotelById(long hotelId) {
-        return hotelRepository.findById(hotelId).orElse(null);
+        return lookUpHotelById(hotelId);
     }
 
     public HotelResponseDto updateHotel(long id, HotelUpdateDto dto){
-        Hotel hotelToUpdate = hotelRepository.findById(id).orElse(new Hotel());
+        Hotel hotelToUpdate = lookUpHotelById(id);
         hotelToUpdate.setName(dto.name());
         hotelToUpdate.setCity(dto.city());
         hotelToUpdate.setAddress(dto.address());

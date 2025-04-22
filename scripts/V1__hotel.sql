@@ -14,3 +14,4 @@ CREATE TABLE hotel
     description TEXT,
     price NUMERIC
 );
+
