@@ -3,8 +3,8 @@ package com.hotels.booking.room.service;
 import com.hotels.booking.common.IdNameDto;
 import com.hotels.booking.common.PageRequestGetter;
 import com.hotels.booking.common.SortType;
-import com.hotels.booking.exceptions.BadRequestException;
-import com.hotels.booking.exceptions.EntityNotFoundException;
+import com.hotels.booking.exception.ExceptionUtil;
+import com.hotels.booking.exception.SecurityViolationException;
 import com.hotels.booking.hotel.repository.entity.Hotel;
 import com.hotels.booking.hotel.service.HotelService;
 import com.hotels.booking.room.controller.dto.RoomCreateDto;
@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class RoomService {
     private final HotelService hotelService;
 
     private Room lookUpRoom(Long id) {
-        return repository.findById(id).orElseThrow(()->new EntityNotFoundException("Room not found, incorrect id"));
+        return repository.findById(id).orElseThrow(SecurityViolationException::new);
     }
 
     public List<IdNameDto> getHotelsIdName(){
@@ -53,7 +54,7 @@ public class RoomService {
     public RoomDetailsGetDto getRoomById(Long roomId) {
         RoomDetailsGetDto room = repository.getRoomDetailsById(roomId);
         if (room == null) {
-            throw new EntityNotFoundException("Room with id " + roomId + " not found");
+            throw new SecurityViolationException();
         }
         return room;
     }
@@ -62,8 +63,8 @@ public class RoomService {
         try {
             Room room = toRoom(dto);
             repository.save(room);
-        } catch (Exception ex) {
-            throw new BadRequestException("Room creation failed, error: " + ex.getMessage());
+        } catch (Exception e) {
+            ExceptionUtil.handleDatabaseExceptions(e, Map.of("un_number_hotel_id", "hotel_cant_have_two_rooms_with_same_number"));
         }
     }
 

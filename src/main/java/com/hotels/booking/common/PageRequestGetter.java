@@ -7,7 +7,6 @@ import org.springframework.data.domain.Sort;
 @AllArgsConstructor
 public class PageRequestGetter {
 
-
     public static PageRequest getPageable(Integer page,
                                           Integer size,
                                           SortType sortType,

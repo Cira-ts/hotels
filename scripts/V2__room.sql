@@ -12,3 +12,5 @@ CREATE TABLE room
     hotel_id BIGINT NOT NULL,
     CONSTRAINT fk_hotel FOREIGN KEY (hotel_id) REFERENCES hotel(id)
 );
+
+alter table room add constraint un_number_hotel_id unique (number, hotel_id)

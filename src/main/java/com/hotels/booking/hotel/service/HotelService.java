@@ -2,7 +2,7 @@ package com.hotels.booking.hotel.service;
 
 
 import com.hotels.booking.common.IdNameDto;
-import com.hotels.booking.exceptions.EntityNotFoundException;
+import com.hotels.booking.exception.SecurityViolationException;
 import com.hotels.booking.hotel.controller.dto.HotelCreateDto;
 import com.hotels.booking.hotel.controller.dto.HotelGetDto;
 import com.hotels.booking.hotel.controller.dto.HotelUpdateDto;
@@ -34,7 +34,7 @@ public class HotelService {
     }
 
     public Hotel lookUpHotelById(Long id) {
-        return hotelRepository.findById(id).orElseThrow( () ->new EntityNotFoundException("Hotel not found, incorrect id")) ;
+        return hotelRepository.findById(id).orElseThrow(SecurityViolationException::new) ;
     }
 
     public HotelResponseDto toHotelResponseDto(Hotel hotel) {
@@ -69,9 +69,6 @@ public class HotelService {
     }
 
     public void deleteHotel(long hotelId) {
-        if (!hotelRepository.existsById(hotelId)) {
-            throw new EntityNotFoundException("Hotel with id " + hotelId + " not found");
-        }  // keep?
         hotelRepository.deleteById(hotelId);
     }
 
