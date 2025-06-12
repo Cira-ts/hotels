@@ -5,7 +5,6 @@ import lombok.Builder;
 import java.math.BigDecimal;
 import jakarta.validation.constraints.NotNull;
 
-
 @Builder
 public record RoomCreateDto (
     @NotNull

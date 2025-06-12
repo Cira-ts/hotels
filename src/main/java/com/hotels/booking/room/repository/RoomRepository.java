@@ -2,7 +2,6 @@ package com.hotels.booking.room.repository;
 
 import com.hotels.booking.hotel.controller.dto.HotelGetDto;
 import com.hotels.booking.room.controller.dto.RoomDetailsGetDto;
-import com.hotels.booking.room.controller.dto.RoomGetDto;
 import com.hotels.booking.room.repository.entity.Room;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +12,7 @@ import java.util.List;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
-    Page<RoomGetDto> findRoomsByHotel_id(Long hotelId, Pageable pageable);
+    Page<RoomDetailsGetDto> findRoomsByHotel_id(Long hotelId, Pageable pageable);
 
     @Query("""
         SELECT

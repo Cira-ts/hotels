@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("admin-user/session")
+@RequestMapping({"/admin-user/session", "/app-user/session"})
 @RequiredArgsConstructor
-public class AdminUserSessionController {
+public class SessionController {
     private final AuthenticationService service;
 
     @PostMapping
@@ -26,7 +26,7 @@ public class AdminUserSessionController {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
-    @PostMapping("refresh-token")
+    @PostMapping("/refresh-token")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         service.refreshToken(request, response);
     }

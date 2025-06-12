@@ -1,5 +1,6 @@
 package com.hotels.booking.security.user.repository.entity;
 
+import com.hotels.booking.reservation.repository.entity.Reservation;
 import com.hotels.booking.security.user.repository.enums.Role;
 import com.hotels.booking.security.user.repository.enums.UserStatus;
 import jakarta.persistence.*;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @Builder
@@ -51,6 +53,9 @@ public class AppUser implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role role;
+
+    @OneToMany(mappedBy="user")
+    private List<Reservation> reservations;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

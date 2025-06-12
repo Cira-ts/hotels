@@ -2,6 +2,7 @@ package com.hotels.booking.hotel.repository.entity;
 
 import com.hotels.booking.hotel.repository.enums.City;
 import com.hotels.booking.room.repository.entity.Room;
+import com.hotels.booking.security.user.repository.entity.AppUser;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -49,6 +50,10 @@ public class Hotel {
 
     @Column(name="price")
     private BigDecimal price;
+
+    @JoinColumn(name="author_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private AppUser author;
 
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Room> rooms;

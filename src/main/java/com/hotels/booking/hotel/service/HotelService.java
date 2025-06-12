@@ -11,6 +11,7 @@ import com.hotels.booking.common.SortType;
 import com.hotels.booking.hotel.repository.HotelRepository;
 import com.hotels.booking.hotel.controller.dto.HotelResponseDto;
 import com.hotels.booking.hotel.repository.entity.Hotel;
+import com.hotels.booking.security.user.service.AppUserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +30,8 @@ import java.util.stream.Collectors;
 public class HotelService {
 
     private final HotelRepository hotelRepository;
+    private final AppUserService appUserService;
+
 
     public List<IdNameDto> getHotelsIdName() {
         return hotelRepository.findHotelIdNames();
@@ -54,6 +58,7 @@ public class HotelService {
                 .email(hotelDto.email())
                 .website(hotelDto.website())
                 .active(hotelDto.active())
+                .author(appUserService.currentUser())
                 .build();
     }
 
@@ -64,11 +69,14 @@ public class HotelService {
 
     public HotelResponseDto saveHotel(HotelCreateDto dto) {
         Hotel hotel = toHotel(dto);
+        validateAdmin(hotel.getAuthor().getId());
         hotelRepository.save(hotel);
         return toHotelResponseDto(hotel);
     }
 
     public void deleteHotel(long hotelId) {
+        Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(SecurityViolationException::new);
+        validateAdmin(hotel.getAuthor().getId());
         hotelRepository.deleteById(hotelId);
     }
 
@@ -78,6 +86,7 @@ public class HotelService {
 
     public HotelResponseDto updateHotel(long id, HotelUpdateDto dto){
         Hotel hotelToUpdate = lookUpHotelById(id);
+        validateAdmin(hotelToUpdate.getAuthor().getId());
         hotelToUpdate.setName(dto.name());
         hotelToUpdate.setCity(dto.city());
         hotelToUpdate.setAddress(dto.address());
@@ -103,4 +112,9 @@ public class HotelService {
                 .collect(Collectors.toList());
     }
 
+
+    private void validateAdmin(Long userId) {
+        if(!Objects.equals(appUserService.currentUser().getId(), userId))
+            throw new SecurityViolationException();
+    }
 }

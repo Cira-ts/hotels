@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -42,7 +43,7 @@ public class UserRegistrationService {
                 .password(passwordEncoder.encode(request.password()))
                 .status(UserStatus.ACTIVE)
                 .registrationDate(LocalDateTime.now())
-                .role(Role.ADMIN)
+                .role(request.role())  //
                 .build();
         saveUserAndGenerateResponse(user);
     }
@@ -53,7 +54,7 @@ public class UserRegistrationService {
         } catch (Exception e) {
             ExceptionUtil.handleDatabaseExceptions(e, Map.of("unique_email", "email_already_exists"));
         }
-        String jwtToken = jwtService.generateToken(user);
+        String jwtToken = jwtService.generateToken(user); //
         authenticationService.saveUserToken(user, jwtToken);
     }
 }

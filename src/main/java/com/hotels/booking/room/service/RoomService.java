@@ -9,9 +9,9 @@ import com.hotels.booking.hotel.repository.entity.Hotel;
 import com.hotels.booking.hotel.service.HotelService;
 import com.hotels.booking.room.controller.dto.RoomCreateDto;
 import com.hotels.booking.room.controller.dto.RoomDetailsGetDto;
-import com.hotels.booking.room.controller.dto.RoomGetDto;
 import com.hotels.booking.room.repository.RoomRepository;
 import com.hotels.booking.room.repository.entity.Room;
+import com.hotels.booking.security.user.service.AppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,14 +19,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class RoomService {
     private final RoomRepository repository;
     private final HotelService hotelService;
+    private final AppUserService userService;
 
-    private Room lookUpRoom(Long id) {
+    public Room lookUpRoom(Long id) {
         return repository.findById(id).orElseThrow(SecurityViolationException::new);
     }
 
@@ -46,7 +48,7 @@ public class RoomService {
                 .build();
     }
 
-    public Page<RoomGetDto> getRooms(Long hotelId, Integer page, Integer size, String sortByField, SortType sortType) {
+    public Page<RoomDetailsGetDto> getRooms(Long hotelId, Integer page, Integer size, String sortByField, SortType sortType) {
         Pageable pageable = PageRequestGetter.getPageable(page,size,sortType,sortByField);
         return repository.findRoomsByHotel_id(hotelId, pageable);
     }
@@ -62,7 +64,10 @@ public class RoomService {
     public void createRoom(RoomCreateDto dto) {
         try {
             Room room = toRoom(dto);
-            repository.save(room);
+
+            validateAdmin(room.getHotel().getAuthor().getId());
+
+            repository.saveAndFlush(room);
         } catch (Exception e) {
             ExceptionUtil.handleDatabaseExceptions(e, Map.of("un_number_hotel_id", "hotel_cant_have_two_rooms_with_same_number"));
         }
@@ -70,11 +75,21 @@ public class RoomService {
 
     public void updateStatus(Long id, boolean active) {
         Room room = lookUpRoom(id);
+
+        validateAdmin(room.getHotel().getAuthor().getId());
+
         room.setActive(active);
         repository.save(room);
     }
 
     public void deleteRoom(Long id) {
+        Room room = lookUpRoom(id);
+        validateAdmin(room.getHotel().getAuthor().getId());
         repository.deleteById(id);
+    }
+
+    private void validateAdmin(Long userId) {
+        if(!Objects.equals(userService.currentUser().getId(), userId))
+            throw new SecurityViolationException();
     }
 }

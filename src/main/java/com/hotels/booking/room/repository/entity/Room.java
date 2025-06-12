@@ -2,10 +2,12 @@ package com.hotels.booking.room.repository.entity;
 
 
 import com.hotels.booking.hotel.repository.entity.Hotel;
+import com.hotels.booking.reservation.repository.entity.Reservation;
 import com.hotels.booking.room.repository.enums.RoomType;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -41,6 +43,9 @@ public class Room {
     @ManyToOne
     @JoinColumn(name="hotel_id", nullable=false)
     private Hotel hotel;
+
+    @OneToMany(mappedBy="room")
+    private List<Reservation> reservations;
 
     @Override
     public boolean equals(Object o) {

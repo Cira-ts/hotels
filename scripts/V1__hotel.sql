@@ -12,6 +12,10 @@ CREATE TABLE hotel
     website VARCHAR(255) UNIQUE,
     active BOOLEAN NOT NULL,
     description TEXT,
-    price NUMERIC
+    price NUMERIC,
+    author_id BIGINT NOT NULL,
+    CONSTRAINT fk_author FOREIGN KEY (author_id) REFERENCES app_user(id)
 );
+
+
 
