@@ -8,7 +8,6 @@ import com.hotels.booking.security.register.controller.dto.RegisterUserRequestDt
 import com.hotels.booking.security.service.JwtService;
 import com.hotels.booking.security.user.repository.AppUserRepository;
 import com.hotels.booking.security.user.repository.entity.AppUser;
-import com.hotels.booking.security.user.repository.enums.Role;
 import com.hotels.booking.security.user.repository.enums.UserStatus;
 import com.nulabinc.zxcvbn.Zxcvbn;
 import jakarta.transaction.Transactional;
@@ -17,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 
 @Service

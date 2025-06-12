@@ -2,7 +2,6 @@ package com.hotels.booking.room.controller;
 
 import com.hotels.booking.common.IdNameDto;
 import com.hotels.booking.common.SortType;
-import com.hotels.booking.room.controller.dto.RoomAdminGetDto;
 import com.hotels.booking.room.controller.dto.RoomCreateDto;
 import com.hotels.booking.room.controller.dto.RoomDetailsGetDto;
 import com.hotels.booking.room.repository.enums.RoomType;

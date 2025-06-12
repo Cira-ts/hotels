@@ -1,6 +1,5 @@
 package com.hotels.booking.security.token.repository;
 
-import aj.org.objectweb.asm.commons.Remapper;
 import com.hotels.booking.security.token.repository.entity.AppUserToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

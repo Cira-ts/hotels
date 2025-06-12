@@ -4,7 +4,6 @@ import com.hotels.booking.reservation.controller.dto.ReservationGetDatesDto;
 import com.hotels.booking.reservation.repository.entity.Reservation;
 import com.hotels.booking.reservation.repository.enums.ReservationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
